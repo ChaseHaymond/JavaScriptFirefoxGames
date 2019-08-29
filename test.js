@@ -12,8 +12,11 @@ aiSpeed = 5;
 window.onload=function() { //call code as soon as game starts
 
 	document.body.style.border = "5px solid red";
-	
-	document.body.innerHTML += '<canvas id="gameCanvas" width="640" height="640"></canvas>'; // the += means we add this to the inner HTML of body
+
+	newHTML = ('<canvas id="gameCanvas" width="640" height="640"></canvas>' + document.body.innerHTML);
+	document.body.innerHTML = newHTML;
+
+	//document.body.innerHTML += '<canvas id="gameCanvas" width="640" height="640"></canvas>'; // the += means we add this to the inner HTML of body
 	document.getElementById('gameCanvas').innerHTML = '<canvas id="gameCanvas" width="640" height="640"></canvas>'; // replaces the inner HTML of #gameCanvas to a canvas
 
     canvas = document.getElementById('gameCanvas'); //get canvas from html page
