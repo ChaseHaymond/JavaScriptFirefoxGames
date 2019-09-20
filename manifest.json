@@ -1,0 +1,20 @@
+{
+
+  "manifest_version": 2,
+  "name": "Page Games",
+  "version": "1.0",
+
+  "description": "A firefox plugin that will add a game to any page you are on.",
+
+  "icons": {
+    "48": "icons/PG-48.png"
+  },
+
+  "content_scripts": [
+    {
+      "matches": ["\u003Call\u005Furls\u003E"],
+      "js": ["test.js"]
+    }
+  ]
+
+}
