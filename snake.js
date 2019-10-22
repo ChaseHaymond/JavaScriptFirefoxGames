@@ -3,8 +3,12 @@ var newDirection = 1;
 var arrayOfX = new Array();
 var arrayOfY = new Array();
 
-// var newSquareX = 0;
-// var newSquareY = 0;
+var prevDirection = 1;
+
+var midX = 0;
+var midY = 0;
+
+var interval = setInterval(update, 1000/15); //calls the function update() 30 times a second
 
 window.onload=function() { //call code as soon as game starts
 
@@ -13,29 +17,34 @@ window.onload=function() { //call code as soon as game starts
     document.body.innerHTML = newHTML;
 
     //document.body.innerHTML += '<canvas id="gameCanvas" width="640" height="640"></canvas>'; // the += means we add this to the inner HTML of body
-    document.getElementById('gameCanvas').innerHTML = '<canvas id="gameCanvas" width="640" height="640"></canvas>'; // replaces the inner HTML of #gameCanvas to a canvas
+
+    // replaces the inner HTML of #gameCanvas to a canvas
+    document.getElementById('gameCanvas').innerHTML = '<canvas id="gameCanvas" width="640" height="640"></canvas>'; 
 
     canvas = document.getElementById('gameCanvas'); //get canvas from html page
     
-    canvasContext = canvas.getContext('2d'); //gets graphics stuff or something
+    canvasContext = canvas.getContext('2d'); //gets graphics stuff
     
-    canvasContext = canvas.getContext('2d'); //gets graphics stuff or something
+    canvasContext = canvas.getContext('2d'); //gets graphics stuff
 
-    squareX = ((canvas.width - (canvas.width % 10))) / 2;
-    squareY = ((canvas.height - (canvas.height % 10))) / 2;
+    midX = squareX = ((canvas.width - (canvas.width % 10))) / 2;
+    midY = squareY = ((canvas.height - (canvas.height % 10))) / 2;
 
     arrayOfX.push(squareX);
     arrayOfY.push(squareY);
 
-    newSquareX = getNewX();
-    newSquareY = getNewY();
+    newSquareX = squareX;
+    newSquareY = squareY;
 
-    setInterval(update, 1000/30); //calls the function update() 30 times a second
     
+    
+    
+
     window.onkeydown = function(e) {
-    newDirection = {37: -1, 38: -2, 39: 1, 40: 2}[e.keyCode] || newDirection;
-        moveSquare();
+    	newDirection = {37: -1, 38: -2, 39: 1, 40: 2}[e.keyCode] || newDirection;
     };
+
+    
 }
 
 function update() { 
@@ -56,9 +65,11 @@ function update() {
         newSquareX = getNewX();
         newSquareY = getNewY();
 
-        arrayOfX.push(arrayOfX[arrayOfX.length-1]-10);
+        arrayOfX.push(arrayOfX[arrayOfX.length-1]);
         arrayOfY.push(arrayOfY[arrayOfY.length-1]-10);
     }
+
+    moveSquare();
 }
 
 function getNewX() {
@@ -72,40 +83,67 @@ function getNewY() {
 }
 
 function moveSquare() {
-    if (newDirection == -1) {
-        for (var i = arrayOfX.length - 1; i >= 0; i--) {
-            arrayOfX[i] -= 10;
+    if (newDirection == -1 && prevDirection != 1) { //left
+    	arrayOfX[0] -= 10;
+        for (var i = arrayOfX.length - 1; i >= 1; i--) {
+        	//arrayOfX[0] -= 10;
+            arrayOfX[i] = arrayOfX[i-1];
+            arrayOfY[i] = arrayOfY[i-1];
         }
-    } else if (newDirection == 1) {
-        for (var i = arrayOfX.length - 1; i >= 0; i--) {
-            arrayOfX[i] += 10;
+        prevDirection = newDirection;
+    } else if (newDirection == 1 && prevDirection != -1) { //right
+    	arrayOfX[0] += 10;
+        for (var i = arrayOfX.length - 1; i >= 1; i--) {
+            //arrayOfX[i] += 10;
+            arrayOfX[i] = arrayOfX[i-1];
+            arrayOfY[i] = arrayOfY[i-1];
         }
-    } else if (newDirection == -2) {
-        for (var i = arrayOfX.length - 1; i >= 0; i--) {
-            arrayOfY[i] -= 10;
+        prevDirection = newDirection;
+    } else if (newDirection == -2 && prevDirection != 2) { //up
+    	arrayOfY[0] -= 10;
+        for (var i = arrayOfX.length - 1; i >= 1; i--) {
+            //arrayOfY[i] -= 10;
+            arrayOfX[i] = arrayOfX[i-1];
+            arrayOfY[i] = arrayOfY[i-1];
         }
-    } else if (newDirection == 2) {
-        for (var i = arrayOfX.length - 1; i >= 0; i--) {
-            arrayOfY[i] += 10;
+        prevDirection = newDirection;
+    } else if (newDirection == 2 && prevDirection != -2) { //down
+    	arrayOfY[0] += 10;
+        for (var i = arrayOfX.length - 1; i >= 1; i--) {
+            //arrayOfY[i] += 10;
+            arrayOfX[i] = arrayOfX[i-1];
+            arrayOfY[i] = arrayOfY[i-1];
         }
+        prevDirection = newDirection;
     }
+    newDirection = prevDirection;
 
     squareX = arrayOfX[0];
     squareY = arrayOfY[0];
 
     if(squareX > canvas.width) {
-        squareX = 0;
+        gameOver();
     }
 
     if(squareX < 0) {
-        squareX = canvas.width;
+        gameOver();
     }
 
     if(squareY > canvas.height) {
-        squareY = 0;
+        gameOver();
     }
 
     if(squareY < 0) {
-        squareY = canvas.height;
+        gameOver();
     }
+}
+
+function gameOver() {
+	canvasContext.fillStyle = 'red';
+	canvasContext.fillRect(0,0,canvas.width, canvas.height);
+	canvasContext.fillStyle = 'Black';
+	canvasContext.font = "30px Arial";
+	canvasContext.fillText("Game Over", midX - 75, midY);
+
+	clearInterval(interval);
 }
